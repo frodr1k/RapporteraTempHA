@@ -26,14 +26,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         
         state = hass.states.get(sensor_entity_id)
         if state is None:
-            _LOGGER.error("Sensor %s not found", sensor_entity_id)
+            _LOGGER.warning("Sensor %s not found, will retry at next interval", sensor_entity_id)
+            return
+        
+        # Check if state is unavailable or unknown
+        if state.state in ["unavailable", "unknown", "none", None]:
+            _LOGGER.warning("Sensor %s state is %s, skipping report", sensor_entity_id, state.state)
             return
         
         try:
             temperature = float(state.state)
-        except (ValueError, TypeError):
-            _LOGGER.error("Invalid temperature value from sensor %s: %s", 
-                         sensor_entity_id, state.state)
+        except (ValueError, TypeError) as err:
+            _LOGGER.warning("Invalid temperature value from sensor %s: %s (error: %s)", 
+                         sensor_entity_id, state.state, err)
             return
         
         url = f"http://www.temperatur.nu/rapportera.php?hash={hash_code}&t={temperature}"
@@ -42,8 +47,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             async with aiohttp.ClientSession() as session:
                 async with session.get(url, timeout=10) as response:
                     if response.status == 200:
-                        _LOGGER.info("Successfully reported temperature %.1f°C to Temperatur.nu", 
-                                   temperature)
+                        _LOGGER.info("Successfully reported temperature %.1f°C from %s to Temperatur.nu", 
+                                   temperature, sensor_entity_id)
                     else:
                         _LOGGER.error("Failed to report temperature. Status: %d", 
                                     response.status)
@@ -59,8 +64,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         async_track_time_interval(hass, report_temperature, interval)
     )
     
-    # Report immediately on startup
-    await report_temperature(None)
+    # Don't report immediately on startup - wait for first interval
+    # This gives sensors time to become available
+    _LOGGER.info("Report Temperature configured for sensor %s with %d minute interval", 
+                 entry.data["sensor_entity_id"], interval_minutes)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     
