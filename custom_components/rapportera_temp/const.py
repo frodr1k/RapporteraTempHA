@@ -1,3 +1,3 @@
-"""Constants for the Rapportera Temperatur integration."""
+"""Constants for the Report Temperature integration."""
 
 DOMAIN = "rapportera_temp"

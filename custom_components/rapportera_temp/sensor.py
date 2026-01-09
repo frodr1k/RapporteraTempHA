@@ -1,4 +1,4 @@
-"""Sensor platform for Rapportera Temperatur."""
+"""Sensor platform for Report Temperature."""
 import logging
 
 from homeassistant.components.sensor import SensorEntity
@@ -21,12 +21,12 @@ async def async_setup_entry(
 
 
 class RapporteraTempStatusSensor(SensorEntity):
-    """Representation of a Rapportera Temp Status sensor."""
+    """Representation of a Report Temperature Status sensor."""
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize the sensor."""
         self._config_entry = config_entry
-        entity_name = config_entry.data.get("entity_name", f"Rapportera Temp ({config_entry.data['sensor_entity_id']})")
+        entity_name = config_entry.data.get("entity_name", f"Report Temperature ({config_entry.data['sensor_entity_id']})")
         self._attr_name = f"{entity_name} Status"
         self._attr_unique_id = f"{DOMAIN}_{config_entry.entry_id}_status"
         self._attr_icon = "mdi:thermometer-check"
@@ -34,7 +34,7 @@ class RapporteraTempStatusSensor(SensorEntity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return "aktiv"
+        return "active"
 
     @property
     def extra_state_attributes(self):

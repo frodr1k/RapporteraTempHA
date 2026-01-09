@@ -1,4 +1,4 @@
-"""Rapportera Temperatur till Temperatur.nu integration."""
+"""Report Temperature to Temperatur.nu integration."""
 import logging
 from datetime import timedelta
 
@@ -14,7 +14,7 @@ DOMAIN = "rapportera_temp"
 PLATFORMS = [Platform.SENSOR]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Rapportera Temperatur from a config entry."""
+    """Set up Report Temperature from a config entry."""
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = entry.data
 

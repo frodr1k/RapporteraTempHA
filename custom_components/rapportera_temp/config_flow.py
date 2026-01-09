@@ -1,4 +1,4 @@
-"""Config flow for Rapportera Temperatur integration."""
+"""Config flow for Report Temperature integration."""
 import logging
 import voluptuous as vol
 
@@ -12,7 +12,7 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for Rapportera Temperatur."""
+    """Handle a config flow for Report Temperature."""
 
     VERSION = 1
 
@@ -33,7 +33,7 @@ class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     sensor_id = user_input["sensor_entity_id"]
                     # Remove "sensor." prefix and create friendly name
                     sensor_name = sensor_id.replace("sensor.", "")
-                    user_input["entity_name"] = f"Rapportera {sensor_name}"
+                    user_input["entity_name"] = f"Report {sensor_name}"
                 
                 # Create the entry
                 return self.async_create_entry(
@@ -57,7 +57,7 @@ class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         min=1,
                         max=60,
                         step=1,
-                        unit_of_measurement="minuter",
+                        unit_of_measurement="minutes",
                         mode=selector.NumberSelectorMode.BOX
                     )
                 ),
@@ -69,7 +69,7 @@ class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=data_schema,
             errors=errors,
             description_placeholders={
-                "hash_info": "Hämta din hash-kod från Temperatur.nu"
+                "hash_info": "Get your hash code from Temperatur.nu"
             }
         )
 
@@ -81,7 +81,7 @@ class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
-    """Handle options flow for Rapportera Temperatur."""
+    """Handle options flow for Report Temperature."""
 
     def __init__(self, config_entry):
         """Initialize options flow."""
@@ -94,7 +94,7 @@ class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
             if not user_input.get("entity_name"):
                 sensor_id = user_input["sensor_entity_id"]
                 sensor_name = sensor_id.replace("sensor.", "")
-                user_input["entity_name"] = f"Rapportera {sensor_name}"
+                user_input["entity_name"] = f"Report {sensor_name}"
             
             # Update config entry with new data
             self.hass.config_entries.async_update_entry(
@@ -131,7 +131,7 @@ class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
                         min=1,
                         max=60,
                         step=1,
-                        unit_of_measurement="minuter",
+                        unit_of_measurement="minutes",
                         mode=selector.NumberSelectorMode.BOX
                     )
                 ),
