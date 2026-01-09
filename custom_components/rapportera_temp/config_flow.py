@@ -28,9 +28,16 @@ class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             elif not user_input.get("sensor_entity_id"):
                 errors["sensor_entity_id"] = "missing_sensor"
             else:
+                # Generate default entity name if not provided
+                if not user_input.get("entity_name"):
+                    sensor_id = user_input["sensor_entity_id"]
+                    # Remove "sensor." prefix and create friendly name
+                    sensor_name = sensor_id.replace("sensor.", "")
+                    user_input["entity_name"] = f"Rapportera {sensor_name}"
+                
                 # Create the entry
                 return self.async_create_entry(
-                    title=f"Rapportera Temp ({user_input['sensor_entity_id']})",
+                    title=user_input["entity_name"],
                     data=user_input,
                 )
 
@@ -44,6 +51,7 @@ class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         device_class="temperature"
                     )
                 ),
+                vol.Optional("entity_name"): str,
                 vol.Optional("interval", default=5): selector.NumberSelector(
                     selector.NumberSelectorConfig(
                         min=1,
@@ -82,10 +90,17 @@ class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_init(self, user_input=None):
         """Manage the options."""
         if user_input is not None:
+            # Generate default entity name if not provided
+            if not user_input.get("entity_name"):
+                sensor_id = user_input["sensor_entity_id"]
+                sensor_name = sensor_id.replace("sensor.", "")
+                user_input["entity_name"] = f"Rapportera {sensor_name}"
+            
             # Update config entry with new data
             self.hass.config_entries.async_update_entry(
                 self.config_entry,
-                data={**self.config_entry.data, **user_input}
+                data={**self.config_entry.data, **user_input},
+                title=user_input["entity_name"]
             )
             return self.async_create_entry(title="", data={})
 
@@ -104,6 +119,10 @@ class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
                         device_class="temperature"
                     )
                 ),
+                vol.Optional(
+                    "entity_name",
+                    default=self.config_entry.data.get("entity_name", "")
+                ): str,
                 vol.Optional(
                     "interval",
                     default=self.config_entry.data.get("interval", 5)

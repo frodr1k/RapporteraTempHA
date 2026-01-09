@@ -7,6 +7,7 @@
         "data": {
           "hash_code": "Hash code from Temperatur.nu",
           "sensor_entity_id": "Select temperature sensor",
+          "entity_name": "Integration name (optional)",
           "interval": "Reporting interval (minutes)"
         }
       }
@@ -27,6 +28,7 @@
         "data": {
           "hash_code": "Hash code from Temperatur.nu",
           "sensor_entity_id": "Select temperature sensor",
+          "entity_name": "Integration name (optional)",
           "interval": "Reporting interval (minutes)"
         }
       }

@@ -7,6 +7,7 @@
         "data": {
           "hash_code": "Hash-kod från Temperatur.nu",
           "sensor_entity_id": "Välj temperatursensor",
+          "entity_name": "Namn på integration (valfritt)",
           "interval": "Rapporteringsintervall (minuter)"
         }
       }
@@ -27,6 +28,7 @@
         "data": {
           "hash_code": "Hash-kod från Temperatur.nu",
           "sensor_entity_id": "Välj temperatursensor",
+          "entity_name": "Namn på integration (valfritt)",
           "interval": "Rapporteringsintervall (minuter)"
         }
       }

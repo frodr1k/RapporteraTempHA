@@ -1,7 +1,7 @@
 {
   "domain": "rapportera_temp",
   "name": "Rapportera Temperatur",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "documentation": "https://github.com/frodr1k/RapporteraTempHA",
   "issue_tracker": "https://github.com/frodr1k/RapporteraTempHA/issues",
   "requirements": [],
