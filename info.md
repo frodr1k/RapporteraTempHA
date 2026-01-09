@@ -23,4 +23,4 @@ Efter installation via HACS:
 
 ## Support
 
-Rapportera problem på [GitHub Issues](https://github.com/fredrik-elmqvist/RapporteraTempHA/issues)
+Rapportera problem på [GitHub Issues](https://github.com/frodr1k/RapporteraTempHA/issues)
