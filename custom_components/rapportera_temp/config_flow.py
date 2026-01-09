@@ -4,7 +4,13 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.core import callback
-from homeassistant.helpers import selector
+from homeassistant.helpers.selector import (
+    EntitySelector,
+    EntitySelectorConfig,
+    NumberSelector,
+    NumberSelectorConfig,
+    NumberSelectorMode,
+)
 
 from .const import DOMAIN
 
@@ -44,20 +50,19 @@ class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         data_schema = vol.Schema(
             {
                 vol.Required("hash_code"): str,
-                vol.Required("sensor_entity_id"): selector.EntitySelector(
-                    selector.EntitySelectorConfig(
-                        domain=["sensor"],
-                        device_class=["temperature"]
+                vol.Required("sensor_entity_id"): EntitySelector(
+                    EntitySelectorConfig(
+                        domain="sensor",
                     )
                 ),
                 vol.Optional("entity_name", default=""): str,
-                vol.Optional("interval", default=5): selector.NumberSelector(
-                    selector.NumberSelectorConfig(
+                vol.Optional("interval", default=5): NumberSelector(
+                    NumberSelectorConfig(
                         min=1,
                         max=60,
                         step=1,
                         unit_of_measurement="minutes",
-                        mode=selector.NumberSelectorMode.BOX
+                        mode=NumberSelectorMode.BOX,
                     )
                 ),
             }
@@ -112,10 +117,9 @@ class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Required(
                     "sensor_entity_id",
                     default=self.config_entry.data.get("sensor_entity_id", "")
-                ): selector.EntitySelector(
-                    selector.EntitySelectorConfig(
-                        domain=["sensor"],
-                        device_class=["temperature"]
+                ): EntitySelector(
+                    EntitySelectorConfig(
+                        domain="sensor",
                     )
                 ),
                 vol.Optional(
@@ -125,13 +129,13 @@ class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
                 vol.Optional(
                     "interval",
                     default=self.config_entry.data.get("interval", 5)
-                ): selector.NumberSelector(
-                    selector.NumberSelectorConfig(
+                ): NumberSelector(
+                    NumberSelectorConfig(
                         min=1,
                         max=60,
                         step=1,
                         unit_of_measurement="minutes",
-                        mode=selector.NumberSelectorMode.BOX
+                        mode=NumberSelectorMode.BOX,
                     )
                 ),
             }
