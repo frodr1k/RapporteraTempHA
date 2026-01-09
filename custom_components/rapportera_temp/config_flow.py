@@ -5,7 +5,6 @@ import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
 from homeassistant.helpers import selector
-import homeassistant.helpers.config_validation as cv
 
 from .const import DOMAIN
 
@@ -47,11 +46,11 @@ class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 vol.Required("hash_code"): str,
                 vol.Required("sensor_entity_id"): selector.EntitySelector(
                     selector.EntitySelectorConfig(
-                        domain="sensor",
-                        device_class="temperature"
+                        domain=["sensor"],
+                        device_class=["temperature"]
                     )
                 ),
-                vol.Optional("entity_name"): str,
+                vol.Optional("entity_name", default=""): str,
                 vol.Optional("interval", default=5): selector.NumberSelector(
                     selector.NumberSelectorConfig(
                         min=1,
@@ -115,8 +114,8 @@ class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
                     default=self.config_entry.data.get("sensor_entity_id", "")
                 ): selector.EntitySelector(
                     selector.EntitySelectorConfig(
-                        domain="sensor",
-                        device_class="temperature"
+                        domain=["sensor"],
+                        device_class=["temperature"]
                     )
                 ),
                 vol.Optional(
