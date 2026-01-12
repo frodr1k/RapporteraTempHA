@@ -1,0 +1,37 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Configure Report Temperature",
+        "description": "Report temperature to Temperatur.nu.\n\n{hash_info}",
+        "data": {
+          "hash_code": "Hash code from Temperatur.nu",
+          "sensor_entity_id": "Select temperature sensor",
+          "entity_name": "Integration name (optional)",
+          "interval": "Reporting interval (minutes)"
+        }
+      }
+    },
+    "error": {
+      "missing_hash": "Hash code must be provided",
+      "missing_sensor": "Sensor must be selected"
+    },
+    "abort": {
+      "already_configured": "This sensor is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Change settings",
+        "description": "Update settings for temperature reporting",
+        "data": {
+          "hash_code": "Hash code from Temperatur.nu",
+          "sensor_entity_id": "Select temperature sensor",
+          "entity_name": "Integration name (optional)",
+          "interval": "Reporting interval (minutes)"
+        }
+      }
+    }
+  }
+}
