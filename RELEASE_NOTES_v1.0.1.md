@@ -1,4 +1,4 @@
-# Release v1.0.0c - Critical Fix
+# Release v1.0.1 - Critical Fix
 
 ## 🐛 Critical Bug Fix
 
@@ -52,7 +52,7 @@ All functionality from v1.0.0b plus the critical fix:
 
 1. Open HACS → Integrations
 2. Find "Rapportera Temperatur" / "Report Temperature"
-3. Click the three dots → "Redownload" or update to v1.0.0c
+3. Click the three dots → "Redownload" or update to v1.0.1
 4. **Restart Home Assistant**
 5. Now you can add the integration under Settings → Devices & Services
 
