@@ -2,34 +2,34 @@
   "config": {
     "step": {
       "user": {
-        "title": "Konfigurera Rapportera Temperatur",
-        "description": "Rapportera temperatur till Temperatur.nu.\n\n{hash_info}",
+        "title": "Configure Report Temperature",
+        "description": "Report temperature to Temperatur.nu.\n\n{hash_info}",
         "data": {
-          "hash_code": "Hash-kod från Temperatur.nu",
-          "sensor_entity_id": "Välj temperatursensor",
-          "entity_name": "Namn på integration (valfritt)",
-          "interval": "Rapporteringsintervall (minuter)"
+          "hash_code": "Hash code from Temperatur.nu",
+          "sensor_entity_id": "Select temperature sensor",
+          "entity_name": "Integration name (optional)",
+          "interval": "Reporting interval (minutes)"
         }
       }
     },
     "error": {
-      "missing_hash": "Hash-kod måste anges",
-      "missing_sensor": "Sensor måste väljas"
+      "missing_hash": "Hash code is required",
+      "missing_sensor": "Sensor must be selected"
     },
     "abort": {
-      "already_configured": "Denna sensor är redan konfigurerad"
+      "already_configured": "This sensor is already configured"
     }
   },
   "options": {
     "step": {
       "init": {
-        "title": "Ändra inställningar",
-        "description": "Uppdatera inställningar för temperaturrapportering",
+        "title": "Change settings",
+        "description": "Update settings for temperature reporting",
         "data": {
-          "hash_code": "Hash-kod från Temperatur.nu",
-          "sensor_entity_id": "Välj temperatursensor",
-          "entity_name": "Namn på integration (valfritt)",
-          "interval": "Rapporteringsintervall (minuter)"
+          "hash_code": "Hash code from Temperatur.nu",
+          "sensor_entity_id": "Select temperature sensor",
+          "entity_name": "Integration name (optional)",
+          "interval": "Reporting interval (minutes)"
         }
       }
     }
