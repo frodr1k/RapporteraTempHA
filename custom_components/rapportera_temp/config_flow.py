@@ -10,9 +10,12 @@ from homeassistant.helpers.selector import (
     NumberSelector,
     NumberSelectorConfig,
     NumberSelectorMode,
+    SelectSelector,
+    SelectSelectorConfig,
+    SelectSelectorMode,
 )
 
-from .const import DOMAIN
+from .const import DOMAIN, AGGREGATION_MIN, AGGREGATION_MEAN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -29,16 +32,24 @@ class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             # Validate hash code
             if not user_input.get("hash_code"):
                 errors["hash_code"] = "missing_hash"
-            # Validate sensor
-            elif not user_input.get("sensor_entity_id"):
-                errors["sensor_entity_id"] = "missing_sensor"
+            # Validate sensors (now a list)
+            elif not user_input.get("sensor_entity_ids"):
+                errors["sensor_entity_ids"] = "missing_sensor"
             else:
+                # Ensure sensors is a list and limit to 3
+                sensors = user_input["sensor_entity_ids"]
+                if not isinstance(sensors, list):
+                    sensors = [sensors]
+                user_input["sensor_entity_ids"] = sensors[:3]
+                
+                # Set default aggregation if not provided
+                if "aggregation_method" not in user_input:
+                    user_input["aggregation_method"] = AGGREGATION_MIN
+                
                 # Generate default entity name if not provided
                 if not user_input.get("entity_name"):
-                    sensor_id = user_input["sensor_entity_id"]
-                    # Remove "sensor." prefix and create friendly name
-                    sensor_name = sensor_id.replace("sensor.", "")
-                    user_input["entity_name"] = f"Report {sensor_name}"
+                    sensor_count = len(sensors)
+                    user_input["entity_name"] = f"Report Temperature ({sensor_count} sensor{'s' if sensor_count > 1 else ''})"
                 
                 # Create the entry
                 return self.async_create_entry(
@@ -50,9 +61,19 @@ class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         data_schema = vol.Schema(
             {
                 vol.Required("hash_code"): str,
-                vol.Required("sensor_entity_id"): EntitySelector(
+                vol.Required("sensor_entity_ids"): EntitySelector(
                     EntitySelectorConfig(
                         domain="sensor",
+                        multiple=True,
+                    )
+                ),
+                vol.Required("aggregation_method", default=AGGREGATION_MIN): SelectSelector(
+                    SelectSelectorConfig(
+                        options=[
+                            {"value": AGGREGATION_MIN, "label": "Lägsta värdet (rekommenderat för skugga)"},
+                            {"value": AGGREGATION_MEAN, "label": "Medelvärde"},
+                        ],
+                        mode=SelectSelectorMode.DROPDOWN,
                     )
                 ),
                 vol.Optional("entity_name", default=""): str,
@@ -73,7 +94,8 @@ class RapporteraTempConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=data_schema,
             errors=errors,
             description_placeholders={
-                "hash_info": "Get your hash code from Temperatur.nu"
+                "hash_info": "Get your hash code from Temperatur.nu",
+                "aggregation_info": "Lägsta värdet garanterar nästan alltid skugga"
             }
         )
 
@@ -94,11 +116,17 @@ class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
     async def async_step_init(self, user_input=None):
         """Manage the options."""
         if user_input is not None:
+            # Ensure sensors is a list and limit to 3
+            if "sensor_entity_ids" in user_input:
+                sensors = user_input["sensor_entity_ids"]
+                if not isinstance(sensors, list):
+                    sensors = [sensors]
+                user_input["sensor_entity_ids"] = sensors[:3]
+            
             # Generate default entity name if not provided
             if not user_input.get("entity_name"):
-                sensor_id = user_input.get("sensor_entity_id", "")
-                sensor_name = sensor_id.replace("sensor.", "")
-                user_input["entity_name"] = f"Report {sensor_name}" if sensor_name else "Report Temperature"
+                sensor_count = len(user_input.get("sensor_entity_ids", []))
+                user_input["entity_name"] = f"Report Temperature ({sensor_count} sensor{'s' if sensor_count > 1 else ''})"
             
             # Update config entry with new data
             self.hass.config_entries.async_update_entry(
@@ -109,6 +137,11 @@ class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
             return self.async_create_entry(title="", data={})
 
         # Get current values
+        current_sensors = self._config_entry.data.get("sensor_entity_ids", 
+                                                        [self._config_entry.data.get("sensor_entity_id", "")])
+        if not isinstance(current_sensors, list):
+            current_sensors = [current_sensors] if current_sensors else []
+        
         return self.async_show_form(
             step_id="init",
             data_schema=vol.Schema(
@@ -118,9 +151,26 @@ class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
                         default=self._config_entry.data.get("hash_code", "")
                     ): str,
                     vol.Required(
-                        "sensor_entity_id",
-                        default=self._config_entry.data.get("sensor_entity_id", "")
-                    ): str,
+                        "sensor_entity_ids",
+                        default=current_sensors
+                    ): EntitySelector(
+                        EntitySelectorConfig(
+                            domain="sensor",
+                            multiple=True,
+                        )
+                    ),
+                    vol.Required(
+                        "aggregation_method",
+                        default=self._config_entry.data.get("aggregation_method", AGGREGATION_MIN)
+                    ): SelectSelector(
+                        SelectSelectorConfig(
+                            options=[
+                                {"value": AGGREGATION_MIN, "label": "Lägsta värdet (rekommenderat för skugga)"},
+                                {"value": AGGREGATION_MEAN, "label": "Medelvärde"},
+                            ],
+                            mode=SelectSelectorMode.DROPDOWN,
+                        )
+                    ),
                     vol.Optional(
                         "entity_name",
                         default=self._config_entry.data.get("entity_name", "")
@@ -131,4 +181,7 @@ class RapporteraTempOptionsFlowHandler(config_entries.OptionsFlow):
                     ): int,
                 }
             ),
+            description_placeholders={
+                "aggregation_info": "Lägsta värdet garanterar nästan alltid skugga"
+            }
         )

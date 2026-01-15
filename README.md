@@ -2,7 +2,7 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 
-A Home Assistant integration for automatically reporting temperature to Temperatur.nu.
+A Home Assistant integration for automatically reporting temperature to Temperatur.nu with support for multiple sensors and intelligent aggregation.
 
 _🇸🇪 [Swedish version below](#rapportera-temperatur-till-temperaturnu---svensk-version) / Svenska beskrivning nedan_
 
@@ -12,19 +12,10 @@ Before you can use this integration, you need an account at Temperatur.nu:
 
 1. Go to [www.temperatur.nu](http://www.temperatur.nu)
 2. Click **"Create account"** or **"Register"**
-3. Fill in the form with:
-   - Username
-   - Email address
-   - Password
-   - Location information (city, country)
-4. Verify your account via the email you receive
-5. Log in to your new account
-6. Find your **hash code** in your account settings or reporting settings
-   - The hash code is a unique code used to identify your station
-   - It looks something like: `abc123def456...`
-7. Copy the hash code - you'll need it to configure the integration
-
-**Tip:** Save your hash code in a secure place, you'll need it every time you configure the integration.
+3. Fill in the form with username, email, password, and location
+4. Verify your account via email
+5. Log in and find your **hash code** in account/reporting settings
+6. Copy the hash code - you'll need it to configure the integration
 
 ## Installation via HACS
 
@@ -45,16 +36,39 @@ Before you can use this integration, you need an account at Temperatur.nu:
 3. Search for "Report Temperature"
 4. Follow the instructions:
    - Enter your hash code from Temperatur.nu
-   - Select temperature sensor from dropdown
+   - Select 1-3 temperature sensors
+   - Choose aggregation method (minimum or mean)
    - Enter reporting interval (minutes)
 
 ## Features
 
-- ✅ GUI-based configuration
-- ✅ Select any temperature sensor from dropdown
-- ✅ Configurable hash code
-- ✅ Automatic reporting with configurable interval
-- ✅ Status tracking and error handling
+- ✅ **Multiple sensor support** - Select up to 3 temperature sensors
+- ✅ **Smart aggregation** - Choose minimum (recommended) or mean value
+- ✅ **Shade temperature guarantee** - Using multiple sensors with minimum value ensures you're always reporting shade temperature, not sun-exposed readings
+- ✅ **Temperature sensor** - The aggregated temperature is available as a separate sensor for use in automations
+- ✅ **GUI-based configuration** - Easy setup through Home Assistant UI
+- ✅ **Automatic reporting** - Configurable interval between 1-60 minutes
+- ✅ **Status tracking** - Monitor last report status and individual sensor temperatures
+
+### Why Multiple Sensors?
+
+Using 2-3 sensors with minimum aggregation virtually guarantees that you're reporting the true shade temperature. Since different sensors may be exposed to sun at different times, the lowest reading will almost always be the one in shade. This is especially important for accurate weather reporting.
+
+## Entities Created
+
+The integration creates two sensors:
+
+1. **Status Sensor** - Shows reporting status with attributes including:
+   - Individual sensor temperatures
+   - Aggregation method
+   - Last reported temperature
+   - Update status and messages
+
+2. **Temperature Sensor** - The aggregated temperature value that can be used in:
+   - Automations
+   - Graphs and history
+   - Other integrations
+   - Mean temperature calculations over time
 
 ## Support
 
@@ -68,7 +82,7 @@ MIT License
 
 # Rapportera Temperatur till Temperatur.nu - Svensk version
 
-En Home Assistant-integration för att automatiskt rapportera temperatur till Temperatur.nu.
+En Home Assistant-integration för att automatiskt rapportera temperatur till Temperatur.nu med stöd för flera sensorer och intelligent aggregering.
 
 ## Skapa konto på Temperatur.nu
 
@@ -76,19 +90,10 @@ Innan du kan använda denna integration behöver du ett konto på Temperatur.nu:
 
 1. Gå till [www.temperatur.nu](http://www.temperatur.nu)
 2. Klicka på **"Skapa konto"** eller **"Registrera dig"**
-3. Fyll i formuläret med:
-   - Användarnamn
-   - E-postadress
-   - Lösenord
-   - Platsinformation (stad, land)
-4. Verifiera ditt konto via e-postmeddelandet du får
-5. Logga in på ditt nya konto
-6. Hitta din **hash-kod** under dina kontoinställningar eller rapporteringsinställningar
-   - Hash-koden är en unik kod som används för att identifiera din station
-   - Den ser ut ungefär som: `abc123def456...`
-7. Kopiera hash-koden - du behöver den för att konfigurera integrationen
-
-**Tips:** Spara din hash-kod på ett säkert ställe, du kommer behöva den varje gång du konfigurerar integrationen.
+3. Fyll i formuläret med användarnamn, e-post, lösenord och plats
+4. Verifiera ditt konto via e-post
+5. Logga in och hitta din **hash-kod** under kontoinställningar
+6. Kopiera hash-koden - du behöver den för konfigurationen
 
 ## Installation via HACS
 
@@ -109,16 +114,39 @@ Innan du kan använda denna integration behöver du ett konto på Temperatur.nu:
 3. Sök efter "Rapportera Temperatur"
 4. Följ instruktionerna:
    - Ange din hash-kod från Temperatur.nu
-   - Välj temperatursensor från dropdown
+   - Välj 1-3 temperatursensorer
+   - Välj aggregeringsmetod (minimum eller medelvärde)
    - Ange rapporteringsintervall (minuter)
 
 ## Funktioner
 
-- ✅ GUI-baserad konfiguration
-- ✅ Välj valfri temperatursensor från dropdown
-- ✅ Konfigurerbar hash-kod
-- ✅ Automatisk rapportering med konfigurerbart intervall
-- ✅ Status och felhantering
+- ✅ **Stöd för flera sensorer** - Välj upp till 3 temperatursensorer
+- ✅ **Smart aggregering** - Välj minimum (rekommenderat) eller medelvärde
+- ✅ **Skuggtemperatur-garanti** - Genom att använda flera sensorer med minimum-värde säkerställer du att du alltid rapporterar skuggtemperatur, inte solexponerad avläsning
+- ✅ **Temperatursensor** - Den aggregerade temperaturen finns tillgänglig som en separat sensor för användning i automationer
+- ✅ **GUI-baserad konfiguration** - Enkel setup genom Home Assistant UI
+- ✅ **Automatisk rapportering** - Konfigurerbart intervall mellan 1-60 minuter
+- ✅ **Statusövervakning** - Se senaste rapporteringsstatus och individuella sensortemperaturer
+
+### Varför flera sensorer?
+
+Att använda 2-3 sensorer med minimum-aggregering garanterar nästan alltid att du rapporterar den sanna skuggtemperaturen. Eftersom olika sensorer kan exponeras för sol vid olika tidpunkter kommer den lägsta avläsningen nästan alltid vara den som står i skugga. Detta är särskilt viktigt för korrekt väderrapportering.
+
+## Skapade entiteter
+
+Integrationen skapar två sensorer:
+
+1. **Statussensor** - Visar rapporteringsstatus med attribut som inkluderar:
+   - Individuella sensortemperaturer
+   - Aggregeringsmetod
+   - Senast rapporterade temperatur
+   - Uppdateringsstatus och meddelanden
+
+2. **Temperatursensor** - Det aggregerade temperaturvärdet som kan användas i:
+   - Automationer
+   - Grafer och historik
+   - Andra integrationer
+   - Medeltemperatur-beräkningar över tid
 
 ## Support
 
