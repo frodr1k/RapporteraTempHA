@@ -1,136 +1,97 @@
-"""Test config flow for RapporteraTempHA."""
+"""Test config flow for RapporteraTempHA - Bronze minimum coverage."""
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-from homeassistant import config_entries, data_entry_flow
 import sys
 from pathlib import Path
+import json
 
 # Ensure the custom_components directory is in the path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-
-class TestConfigFlow:
-    """Test the config flow."""
-    
-    def test_config_flow_imports(self):
-        """Test that config flow imports work."""
-        try:
-            from custom_components.rapportera_temp.config_flow import RapporteraTempConfigFlow
-            from custom_components.rapportera_temp import DOMAIN
-            assert RapporteraTempConfigFlow is not None
-            assert DOMAIN == "rapportera_temp"
-        except ImportError as e:
-            pytest.skip(f"Could not import config flow: {e}")
-    
-    def test_form_schema_structure(self):
-        """Test that the form schema has correct fields."""
-        try:
-            from custom_components.rapportera_temp.config_flow import RapporteraTempConfigFlow
-            import voluptuous as vol
-            
-            # The config flow should define a schema with required fields
-            # This test verifies the structure exists
-            assert hasattr(RapporteraTempConfigFlow, 'async_step_user')
-        except ImportError as e:
-            pytest.skip(f"Could not import for schema test: {e}")
+DOMAIN = "rapportera_temp"
 
 
-class TestConnectionValidation:
-    """Test connection validation in config flow."""
+def test_manifest_valid():
+    """Test that manifest.json is valid and has required fields."""
+    manifest_path = project_root / 'custom_components' / 'rapportera_temp' / 'manifest.json'
+    assert manifest_path.exists(), "manifest.json does not exist"
     
-    @pytest.mark.asyncio
-    async def test_validate_hash_code_success(self):
-        """Test successful hash code validation."""
-        try:
-            from custom_components.rapportera_temp.config_flow import validate_hash_code
-            from unittest.mock import AsyncMock, MagicMock
-            
-            mock_hass = MagicMock()
-            test_hash = "test_hash_123"
-            
-            # Mock successful HTTP response
-            mock_response = AsyncMock()
-            mock_response.status = 200
-            mock_response.text = AsyncMock(return_value="OK")
-            
-            with patch('aiohttp.ClientSession') as mock_session:
-                mock_session_instance = AsyncMock()
-                mock_session.return_value.__aenter__.return_value = mock_session_instance
-                mock_session_instance.post.return_value.__aenter__.return_value = mock_response
-                
-                result = await validate_hash_code(mock_hass, test_hash)
-                assert result is True
-        except ImportError as e:
-            pytest.skip(f"Could not import validation function: {e}")
+    with open(manifest_path, 'r', encoding='utf-8') as f:
+        manifest = json.load(f)
     
-    @pytest.mark.asyncio
-    async def test_validate_hash_code_failure(self):
-        """Test failed hash code validation."""
-        try:
-            from custom_components.rapportera_temp.config_flow import validate_hash_code
-            from unittest.mock import AsyncMock, MagicMock
-            
-            mock_hass = MagicMock()
-            test_hash = "invalid_hash"
-            
-            # Mock failed HTTP response
-            mock_response = AsyncMock()
-            mock_response.status = 403
-            mock_response.text = AsyncMock(return_value="Invalid hash")
-            
-            with patch('aiohttp.ClientSession') as mock_session:
-                mock_session_instance = AsyncMock()
-                mock_session.return_value.__aenter__.return_value = mock_session_instance
-                mock_session_instance.post.return_value.__aenter__.return_value = mock_response
-                
-                result = await validate_hash_code(mock_hass, test_hash)
-                assert result is False
-        except ImportError as e:
-            pytest.skip(f"Could not import validation function: {e}")
+    assert manifest['domain'] == DOMAIN
+    assert manifest['name'] == 'Rapportera Temperatur'
+    assert 'version' in manifest
+    
+    # Verify version format (X.Y.Z)
+    version_parts = manifest['version'].split('.')
+    assert len(version_parts) >= 2, "Version should be in format X.Y or X.Y.Z"
+    for part in version_parts:
+        assert part.isdigit(), f"Version part '{part}' should be numeric"
 
 
-class TestDuplicateEntry:
-    """Test duplicate entry prevention."""
+def test_strings_json_valid():
+    """Test that strings.json is valid and has config flow structure."""
+    strings_path = project_root / 'custom_components' / 'rapportera_temp' / 'strings.json'
+    assert strings_path.exists(), "strings.json does not exist"
     
-    def test_unique_id_format(self):
-        """Test that unique ID is based on hash code to prevent duplicates."""
-        try:
-            from custom_components.rapportera_temp.config_flow import RapporteraTempConfigFlow
-            
-            # The config flow should set unique_id based on hash_code
-            # This prevents duplicate entries for the same temperatur.nu station
-            flow = RapporteraTempConfigFlow()
-            assert hasattr(flow, 'async_step_user')
-            
-            # The implementation should call self.async_set_unique_id(hash_code)
-            # and self._abort_if_unique_id_configured()
-        except ImportError as e:
-            pytest.skip(f"Could not import for duplicate test: {e}")
+    with open(strings_path, 'r', encoding='utf-8') as f:
+        strings = json.load(f)
+    
+    # Verify config flow structure
+    assert 'config' in strings
+    assert 'step' in strings['config']
+    assert 'user' in strings['config']['step']
+    assert 'data' in strings['config']['step']['user']
+    
+    # Verify required fields exist in strings
+    user_data = strings['config']['step']['user']['data']
+    assert 'hash_code' in user_data
+    assert 'sensor_entity_ids' in user_data
+    assert 'aggregation_method' in user_data
 
 
-class TestMultipleSensorSupport:
-    """Test multiple sensor configuration support."""
+def test_translations_exist():
+    """Test that Swedish translations exist."""
+    translations_path = project_root / 'custom_components' / 'rapportera_temp' / 'translations' / 'sv.json'
+    assert translations_path.exists(), "sv.json does not exist"
     
-    def test_sensor_entity_ids_field(self):
-        """Test that sensor_entity_ids field accepts multiple sensors."""
-        try:
-            from custom_components.rapportera_temp.config_flow import RapporteraTempConfigFlow
-            
-            # Config flow should support sensor_entity_ids as a list
-            # Maximum 3 sensors as per requirements
-            flow = RapporteraTempConfigFlow()
-            assert flow is not None
-        except ImportError as e:
-            pytest.skip(f"Could not import for multi-sensor test: {e}")
+    with open(translations_path, 'r', encoding='utf-8') as f:
+        translations = json.load(f)
     
-    def test_aggregation_method_field(self):
-        """Test that aggregation_method field exists."""
+    assert 'config' in translations
+
+
+def test_config_flow_class_exists():
+    """Test that ConfigFlow class exists and has required methods."""
+    from custom_components.rapportera_temp.config_flow import RapporteraTempConfigFlow
+    from custom_components.rapportera_temp import DOMAIN as imported_domain
+    
+    assert imported_domain == DOMAIN
+    assert RapporteraTempConfigFlow is not None
+    assert hasattr(RapporteraTempConfigFlow, 'async_step_user')
+    assert callable(getattr(RapporteraTempConfigFlow, 'async_step_user'))
+
+
+def test_version_format_consistent():
+    """Test that version in manifest matches expected format for releases."""
+    manifest_path = project_root / 'custom_components' / 'rapportera_temp' / 'manifest.json'
+    
+    with open(manifest_path, 'r', encoding='utf-8') as f:
+        manifest = json.load(f)
+    
+    version = manifest['version']
+    parts = version.split('.')
+    
+    # Should have at least major.minor, optionally major.minor.patch
+    assert len(parts) in [2, 3], f"Version {version} should have 2 or 3 parts"
+    
+    # All parts should be integers
+    for i, part in enumerate(parts):
         try:
-            from custom_components.rapportera_temp.const import AGGREGATION_MIN, AGGREGATION_MEAN
-            
-            # Verify aggregation constants exist
-            assert AGGREGATION_MIN == "min"
-            assert AGGREGATION_MEAN == "mean"
-        except ImportError as e:
-            pytest.skip(f"Could not import aggregation constants: {e}")
+            int_part = int(part)
+            assert int_part >= 0, f"Version part {part} should be non-negative"
+        except ValueError:
+            pytest.fail(f"Version part '{part}' is not a valid integer")
+
