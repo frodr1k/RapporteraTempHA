@@ -1,12 +1,12 @@
 {
   "domain": "rapportera_temp",
   "name": "Rapportera Temperatur",
-  "version": "1.3.0",
-  "documentation": "https://github.com/frodr1k/RapporteraTempHA",
-  "issue_tracker": "https://github.com/frodr1k/RapporteraTempHA/issues",
-  "requirements": [],
   "codeowners": ["@frodr1k"],
   "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/frodr1k/RapporteraTempHA",
   "iot_class": "cloud_push",
-  "dependencies": []
+  "issue_tracker": "https://github.com/frodr1k/RapporteraTempHA/issues",
+  "requirements": [],
+  "version": "1.3.0"
 }
