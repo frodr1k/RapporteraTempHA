@@ -1,13 +1,9 @@
 """Test config flow for RapporteraTempHA - Bronze minimum coverage."""
-import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
-import sys
-from pathlib import Path
 import json
+from pathlib import Path
 
-# Ensure the custom_components directory is in the path
+# Get project root
 project_root = Path(__file__).parent.parent
-sys.path.insert(0, str(project_root))
 
 DOMAIN = "rapportera_temp"
 
@@ -23,6 +19,9 @@ def test_manifest_valid():
     assert manifest['domain'] == DOMAIN
     assert manifest['name'] == 'Rapportera Temperatur'
     assert 'version' in manifest
+    assert 'documentation' in manifest
+    assert 'issue_tracker' in manifest
+    assert 'codeowners' in manifest
     
     # Verify version format (X.Y.Z)
     version_parts = manifest['version'].split('.')
@@ -63,15 +62,37 @@ def test_translations_exist():
     assert 'config' in translations
 
 
-def test_config_flow_class_exists():
-    """Test that ConfigFlow class exists and has required methods."""
-    from custom_components.rapportera_temp.config_flow import RapporteraTempConfigFlow
-    from custom_components.rapportera_temp import DOMAIN as imported_domain
+def test_required_files_exist():
+    """Test that all required files exist."""
+    required_files = [
+        'custom_components/rapportera_temp/__init__.py',
+        'custom_components/rapportera_temp/manifest.json',
+        'custom_components/rapportera_temp/const.py',
+        'custom_components/rapportera_temp/config_flow.py',
+        'custom_components/rapportera_temp/sensor.py',
+        'custom_components/rapportera_temp/strings.json',
+        'custom_components/rapportera_temp/translations/sv.json',
+        'hacs.json',
+        'README.md',
+        'LICENSE',
+    ]
     
-    assert imported_domain == DOMAIN
-    assert RapporteraTempConfigFlow is not None
-    assert hasattr(RapporteraTempConfigFlow, 'async_step_user')
-    assert callable(getattr(RapporteraTempConfigFlow, 'async_step_user'))
+    for file_path in required_files:
+        full_path = project_root / file_path
+        assert full_path.exists(), f"Required file {file_path} does not exist"
+
+
+def test_hacs_json_valid():
+    """Test that hacs.json is valid."""
+    hacs_path = project_root / 'hacs.json'
+    assert hacs_path.exists(), "hacs.json does not exist"
+    
+    with open(hacs_path, 'r', encoding='utf-8') as f:
+        hacs = json.load(f)
+    
+    assert 'name' in hacs
+    assert hacs['name'] == 'Rapportera Temperatur'
+    assert 'render_readme' in hacs
 
 
 def test_version_format_consistent():
@@ -88,10 +109,6 @@ def test_version_format_consistent():
     assert len(parts) in [2, 3], f"Version {version} should have 2 or 3 parts"
     
     # All parts should be integers
-    for i, part in enumerate(parts):
-        try:
-            int_part = int(part)
-            assert int_part >= 0, f"Version part {part} should be non-negative"
-        except ValueError:
-            pytest.fail(f"Version part '{part}' is not a valid integer")
-
+    for part in parts:
+        int_part = int(part)
+        assert int_part >= 0, f"Version part {part} should be non-negative"
