@@ -39,7 +39,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if not isinstance(sensor_ids, list):
             sensor_ids = [sensor_ids]
         
-        hash_code = entry.data["hash_code"]
+        hash_code = entry.data.get("hash_code")
+        if not hash_code:
+            _LOGGER.error("No hash_code found in configuration")
+            return
+        
         aggregation_method = entry.data.get("aggregation_method", AGGREGATION_MIN)
         
         # Collect temperatures from all sensors

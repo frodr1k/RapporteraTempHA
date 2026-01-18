@@ -1,10 +1,17 @@
 # Report Temperature to Temperatur.nu
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![GitHub release](https://img.shields.io/github/v/release/frodr1k/RapporteraTempHA)](https://github.com/frodr1k/RapporteraTempHA/releases)
 
 A Home Assistant integration for automatically reporting temperature to Temperatur.nu with support for multiple sensors and intelligent aggregation.
 
 _🇸🇪 [Swedish version below](#rapportera-temperatur-till-temperaturnu---svensk-version) / Svenska beskrivning nedan_
+
+## Latest Release - v1.3.1 (2026-01-18)
+
+**Bug Fix Release** - Fixed critical issue preventing sensor creation in some configurations. See [CHANGELOG.md](CHANGELOG.md) for details.
+
+✅ No breaking changes - all existing configurations will continue to work.
 
 ## Create an Account at Temperatur.nu
 

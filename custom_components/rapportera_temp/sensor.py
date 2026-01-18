@@ -32,7 +32,13 @@ class RapporteraTempStatusSensor(SensorEntity):
         """Initialize the sensor."""
         self._hass = hass
         self._config_entry = config_entry
-        entity_name = config_entry.data.get("entity_name", f"Report Temperature ({config_entry.data['sensor_entity_id']})")
+        # Support both old (sensor_entity_id) and new (sensor_entity_ids) configuration
+        sensors = config_entry.data.get("sensor_entity_ids", [config_entry.data.get("sensor_entity_id")])
+        if not isinstance(sensors, list):
+            sensors = [sensors]
+        sensor_count = len([s for s in sensors if s])
+        default_name = f"Report Temperature ({sensor_count} sensor{'s' if sensor_count > 1 else ''})"
+        entity_name = config_entry.data.get("entity_name", default_name)
         self._attr_name = f"{entity_name} Status"
         self._attr_unique_id = f"{DOMAIN}_{config_entry.entry_id}_status"
         self._attr_icon = "mdi:cloud-upload"
@@ -60,7 +66,7 @@ class RapporteraTempStatusSensor(SensorEntity):
             "sensor_count": len([s for s in sensors if s]),
             "aggregation_method": config.get("aggregation_method", "min"),
             "sensor_temperatures": data.get("sensor_temperatures", {}),
-            "hash_code": config["hash_code"][:8] + "...",
+            "hash_code": (config.get("hash_code", "")[:8] + "...") if config.get("hash_code") else "N/A",
             "interval_minutes": config.get("interval", 5),
             "last_update_status": data.get("last_update_status", "pending"),
             "last_update_message": data.get("last_update_message", "No updates yet"),
