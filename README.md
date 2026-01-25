@@ -5,13 +5,13 @@
 
 A Home Assistant integration for automatically reporting temperature to Temperatur.nu with support for multiple sensors and intelligent aggregation.
 
-_🇸🇪 [Swedish version below](#rapportera-temperatur-till-temperaturnu---svensk-version) / Svenska beskrivning nedan_
+[Swedish version below](#rapportera-temperatur-till-temperaturnu---svensk-version) / Svenska beskrivning nedan
 
 ## Latest Release - v1.3.1 (2026-01-18)
 
-**Bug Fix Release** - Fixed critical issue preventing sensor creation in some configurations. See [CHANGELOG.md](CHANGELOG.md) for details.
+Bug Fix Release - Fixed critical issue preventing sensor creation in some configurations. See [CHANGELOG.md](CHANGELOG.md) for details.
 
-✅ No breaking changes - all existing configurations will continue to work.
+No breaking changes - all existing configurations will continue to work.
 
 ## Create an Account at Temperatur.nu
 
@@ -49,17 +49,17 @@ Before you can use this integration, you need an account at Temperatur.nu:
 
 ## Features
 
-- ✅ **Multiple sensor support** - Select up to 3 temperature sensors
-- ✅ **Smart aggregation** - Choose minimum (recommended) or mean value
-- ✅ **Shade temperature guarantee** - Using multiple sensors with minimum value ensures you're always reporting shade temperature, not sun-exposed readings
-- ✅ **Temperature sensor** - The aggregated temperature is available as a separate sensor for use in automations
-- ✅ **GUI-based configuration** - Easy setup through Home Assistant UI
-- ✅ **Automatic reporting** - Configurable interval between 1-60 minutes
-- ✅ **Status tracking** - Monitor last report status and individual sensor temperatures
+- **Multiple sensor support** - Select up to 3 temperature sensors
+- **Smart aggregation** - Choose minimum (recommended) or mean value
+- **Shade temperature guarantee** - Using multiple sensors with minimum value ensures accurate shade temperature reporting
+- **Temperature sensor** - Aggregated temperature available as a separate sensor for automations
+- **GUI-based configuration** - Easy setup through Home Assistant UI
+- **Automatic reporting** - Configurable interval between 1-60 minutes
+- **Status tracking** - Monitor last report status and individual sensor temperatures
 
 ### Why Multiple Sensors?
 
-Using 2-3 sensors with minimum aggregation virtually guarantees that you're reporting the true shade temperature. Since different sensors may be exposed to sun at different times, the lowest reading will almost always be the one in shade. This is especially important for accurate weather reporting.
+Using 2-3 sensors with minimum aggregation virtually guarantees accurate shade temperature reporting. Since different sensors may be exposed to sun at different times, the lowest reading will almost always be from the sensor in shade. This is especially important for accurate weather reporting.
 
 ## Entities Created
 
@@ -127,17 +127,17 @@ Innan du kan använda denna integration behöver du ett konto på Temperatur.nu:
 
 ## Funktioner
 
-- ✅ **Stöd för flera sensorer** - Välj upp till 3 temperatursensorer
-- ✅ **Smart aggregering** - Välj minimum (rekommenderat) eller medelvärde
-- ✅ **Skuggtemperatur-garanti** - Genom att använda flera sensorer med minimum-värde säkerställer du att du alltid rapporterar skuggtemperatur, inte solexponerad avläsning
-- ✅ **Temperatursensor** - Den aggregerade temperaturen finns tillgänglig som en separat sensor för användning i automationer
-- ✅ **GUI-baserad konfiguration** - Enkel setup genom Home Assistant UI
-- ✅ **Automatisk rapportering** - Konfigurerbart intervall mellan 1-60 minuter
-- ✅ **Statusövervakning** - Se senaste rapporteringsstatus och individuella sensortemperaturer
+- **Stöd för flera sensorer** - Välj upp till 3 temperatursensorer
+- **Smart aggregering** - Välj minimum (rekommenderat) eller medelvärde
+- **Skuggtemperatur-garanti** - Flera sensorer med minimum-värde säkerställer korrekt skuggtemperatur
+- **Temperatursensor** - Aggregerad temperatur tillgänglig som separat sensor för automationer
+- **GUI-baserad konfiguration** - Enkel konfiguration genom Home Assistant UI
+- **Automatisk rapportering** - Konfigurerbart intervall mellan 1-60 minuter
+- **Statusövervakning** - Se senaste rapporteringsstatus och individuella sensortemperaturer
 
 ### Varför flera sensorer?
 
-Att använda 2-3 sensorer med minimum-aggregering garanterar nästan alltid att du rapporterar den sanna skuggtemperaturen. Eftersom olika sensorer kan exponeras för sol vid olika tidpunkter kommer den lägsta avläsningen nästan alltid vara den som står i skugga. Detta är särskilt viktigt för korrekt väderrapportering.
+Att använda 2-3 sensorer med minimum-aggregering garanterar nästan alltid korrekt skuggtemperatur. Eftersom olika sensorer kan exponeras för sol vid olika tidpunkter kommer den lägsta avläsningen nästan alltid vara från sensorn i skugga. Detta är särskilt viktigt för korrekt väderrapportering.
 
 ## Skapade entiteter
 
